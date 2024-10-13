@@ -4,9 +4,10 @@ from app.repositories import ProductRepository
 
 repository = ProductRepository()
 
+
 class ProductService:
-    """ Clase que se encarga de CRUD de productos """
-    
+    """Clase que se encarga de CRUD de productos"""
+
     def save(self, product: Product) -> Product:
         return repository.save(product)
 
@@ -19,29 +20,29 @@ class ProductService:
             repository.delete(product)
 
     def all(self) -> List[Product]:
-        """ Retorna una lista de todos los productos. """
+        """Retorna una lista de todos los productos."""
         return repository.all()
-    
-    def get_product_by_id(self, id:int):
+
+    def get_product_by_id(self, id: int):
         return repository.get_product_id(id)
-    
+
     def check_price(self, id: int) -> float:
         return repository.find(id).price
-    
+
     def check_availability(self, id: int) -> bool:
         return repository.find(id).activated
 
     def check_availability_name(self, nombre: str) -> bool:
         return repository.find_by_name(nombre).activated
-    
+
     def find(self, id: int) -> Product:
-        """ Busca un producto por su ID. """
+        """Busca un producto por su ID."""
         return repository.find(id)
 
     def find_by_name(self, nombre: str) -> Product:
-        """ Busca un producto por su nombre. """
+        """Busca un producto por su nombre."""
         return repository.find_by_name(nombre)
 
     def find_by_price(self, precio: float) -> List[Product]:
-        """ Busca productos por su precio. """
+        """Busca productos por su precio."""
         return repository.find_by_price(precio)

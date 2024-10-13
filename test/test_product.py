@@ -7,9 +7,9 @@ from app.services import ProductService
 
 product_service = ProductService()
 
+
 class ProductTestCase(unittest.TestCase):
-    def setUp(self):        
-        os.environ['FLASK_CONTEXT'] = 'testing'
+    def setUp(self):
         self.app = create_app()
         self.app_context = self.app.app_context()
         self.app_context.push()
@@ -22,7 +22,7 @@ class ProductTestCase(unittest.TestCase):
 
     def test_app(self):
         self.assertIsNotNone(current_app)
-    
+
     def test_create_product(self):
         """Verifica que se puede crear y guardar un producto en la base de datos."""
         new_product = Product(name="Producto Test", price=100.0, activated=True)
@@ -42,7 +42,7 @@ class ProductTestCase(unittest.TestCase):
         id = new_product.id
 
         # Actualiza el producto
-        #product = product_service.find_by_name("Producto Test")
+        # product = product_service.find_by_name("Producto Test")
         new_product.price = 150.0
 
         product_service.update(new_product, id)
@@ -78,14 +78,13 @@ class ProductTestCase(unittest.TestCase):
         # Verifica que el producto está desactivado
         deactivated_product = product = product_service.find_by_name("Producto Test")
         self.assertFalse(deactivated_product.activated)
-    
+
     def test_check_price(self):
         new_product = Product(name="Producto Test2", price=255.0, activated=True)
         product_service.save(new_product)
 
         price = product_service.check_price(new_product.id)
         self.assertEqual(price, 255.0)
-
 
     def test_check_availability(self):
         new_product = Product(name="Producto Test2", price=100.0, activated=True)
@@ -95,7 +94,7 @@ class ProductTestCase(unittest.TestCase):
         self.assertTrue(availability)
 
         new_product.activated = False
-        #product_service.save(product)
+        # product_service.save(product)
         availability = product_service.check_availability(new_product.id)
         self.assertFalse(availability)
 
@@ -108,12 +107,12 @@ class ProductTestCase(unittest.TestCase):
         self.assertTrue(availability)
 
         product.activated = False
-        #product_service.save(product)
+        # product_service.save(product)
         availability = product_service.check_availability_name("Producto Test2")
         self.assertFalse(availability)
 
     def test_get_product_by_id_exists_and_active(self):
-        product = Product(id=1, name="Producto de prueba", price=100.0, activated=True)
+        product = Product(name="Producto de prueba", price=100.0, activated=True)
         product_service.save(product)
         result = product_service.get_product_by_id(1)
 
@@ -122,10 +121,10 @@ class ProductTestCase(unittest.TestCase):
         self.assertTrue(result.activated)
 
     def test_get_product_by_id_not_active(self):
-        inactive_product = Product(id=2, name="Producto inactivo", price=50.0, activated=False)
+        inactive_product = Product(
+            name="Producto inactivo", price=50.0, activated=False
+        )
         product_service.save(inactive_product)
-        result = product_service.get_product_by_id(2)
+        result = product_service.get_product_by_id(1)
 
         self.assertIsNone(result)
-
-    

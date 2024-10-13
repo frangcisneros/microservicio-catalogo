@@ -8,7 +8,6 @@ from app import create_app, db
 class ConnectionTestCase(unittest.TestCase):
 
     def setUp(self):
-        os.environ['FLASK_CONTEXT'] = 'testing'
         self.app = create_app()
         self.app_context = self.app.app_context()
         self.app_context.push()
@@ -22,7 +21,8 @@ class ConnectionTestCase(unittest.TestCase):
     # test connection to db
     def test_db_connection(self):
         result = db.session.query(text("'Hello world'")).one()
-        self.assertEqual(result[0], 'Hello world')
-    
-if __name__ == '__main__':
+        self.assertEqual(result[0], "Hello world")
+
+
+if __name__ == "__main__":
     unittest.main()

@@ -1,15 +1,18 @@
-from typing import List
+from typing import List, Optional
 from app.models import Product
 from app import db
 
+
 class ProductRepository:
+    """Repository for managing Product entities."""
+
     def save(self, product: Product) -> Product:
         """Guarda un nuevo producto en la base de datos."""
         db.session.add(product)
         db.session.commit()
         return product
 
-    def update(self, product: Product, id: int) -> Product:
+    def update(self, product: Product, id: int) -> Optional[Product]:
         """Actualiza un producto existente en la base de datos."""
         entity = self.find(id)
         if entity is None:
@@ -29,32 +32,29 @@ class ProductRepository:
 
     def all(self) -> List[Product]:
         """Devuelve una lista de todos los productos en la base de datos."""
-        products = db.session.query(Product).all()
-        return products
+        return db.session.query(Product).all()
 
-    def get_product_id(self, id: int) -> Product:
+    def get_product_id(self, id: int) -> Optional[Product]:
         """Busca un producto por su ID y que esté activo (activo = true)."""
-        if id is None or id == 0:
-            return None
-        try:
-            return db.session.query(Product).filter(Product.id == id, Product.activated == True).one()
-        except:
-            return None
-    
-    def find(self, id: int) -> Product:
+        return (
+            db.session.query(Product)
+            .filter(Product.id == id, Product.activated == True)
+            .first()
+        )
+
+    def find(self, id: int) -> Optional[Product]:
         """Busca un producto por su ID."""
         if id is None or id == 0:
             return None
         try:
             return db.session.query(Product).filter(Product.id == id).one()
-        except:
+        except Exception:
             return None
 
-    def find_by_name(self, name: str) -> Product:
+    def find_by_name(self, name: str) -> Optional[Product]:
         """Busca un producto por su nombre."""
         return db.session.query(Product).filter(Product.name == name).first()
 
     def find_by_price(self, price: float) -> List[Product]:
         """Busca productos por su precio."""
         return db.session.query(Product).filter(Product.price == price).all()
-

@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+
 basedir = os.path.abspath(Path(__file__).parents[2])
 load_dotenv(os.path.join(basedir, ".env"))
 
@@ -16,16 +17,47 @@ class Config(object):
     def init_app(app):
         pass
 
+
+class DevelopmentConfig(Config):
+    TESTING = True
+    DEBUG = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "connect_args": {
+            "options": "-csearch_path=catalogo_schema"  # Cambia esto según el microservicio
+        }
+    }
+
+
 class TestConfig(Config):
     TESTING = True
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URI')
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_TEST_URL")
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "connect_args": {
+            "options": "-csearch_path=compras_schema"  # Cambia esto según el microservicio
+        }
+    }
 
+
+class ProductionConfig(Config):
+    DEBUG = False
+    TESTING = False
+    SQLALCHEMY_RECORD_QUERIES = False
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_PROD_URL")
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "connect_args": {
+            "options": "-csearch_path=main_schema"  # Cambia esto según el esquema que uses
+        }
+    }
 
 
 def factory(app):
     configuation = {
-        'testing': TestConfig,
+        "development": DevelopmentConfig,
+        "testing": TestConfig,
+        "production": ProductionConfig,
     }
     return configuation[app]
