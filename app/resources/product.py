@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify
 from app.services import ProductService
+from app.repositories import ProductRepository
 from app.models import Product
 
 
 product = Blueprint("product", __name__)
 product_service = ProductService()
+product_repository = ProductRepository()
 
 
 @product.route("/", methods=["GET"])
@@ -53,3 +55,20 @@ def delete_producto(product_id):
 def check_price(product_id):
     price = product_service.check_price(product_id)
     return {"price": price}, 200
+
+
+# ruta para obtener todos los productos
+@product.route("/get_all_products", methods=["GET"])
+def get_all_products():
+    products = product_repository.all()
+    return jsonify(
+        [
+            {
+                "id": product.id,
+                "name": product.name,
+                "price": product.price,
+                "activated": product.activated,
+            }
+            for product in products
+        ]
+    )

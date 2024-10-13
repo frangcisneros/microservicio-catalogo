@@ -44,7 +44,7 @@ class ProductRepository:
 
     def find(self, id: int) -> Optional[Product]:
         """Busca un producto por su ID."""
-        if id is None or id == 0:
+        if id is None:
             return None
         try:
             return db.session.query(Product).filter(Product.id == id).one()

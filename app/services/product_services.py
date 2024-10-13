@@ -46,3 +46,6 @@ class ProductService:
     def find_by_price(self, precio: float) -> List[Product]:
         """Busca productos por su precio."""
         return repository.find_by_price(precio)
+
+    def get_all_products(self) -> List[Product]:
+        return repository.all()
