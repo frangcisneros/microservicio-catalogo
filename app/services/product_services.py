@@ -1,4 +1,5 @@
 from typing import List
+from app import cache
 from app.models import Product
 from app.repositories import ProductRepository
 
@@ -9,7 +10,9 @@ class ProductService:
     """Clase que se encarga de CRUD de productos"""
 
     def save(self, product: Product) -> Product:
-        return repository.save(product)
+        producto=repository.save(product)
+        cache.set(f'product_{producto.id}',producto,timeout=15)
+        return producto
 
     def update(self, product: Product, id: int) -> Product:
         return repository.update(product, id)
@@ -20,11 +23,18 @@ class ProductService:
             repository.delete(product)
 
     def all(self) -> List[Product]:
-        """Retorna una lista de todos los productos."""
-        return repository.all()
+        result=cache.get('products')
+        if result is None:
+            result=repository.all()
+            cache.set('products',result,timeout=15)
+        return result
 
     def get_product_by_id(self, id: int):
-        return repository.get_product_id(id)
+        result=cache.get(f'product_{id}')
+        if result is None:
+            result=repository.get_product_id(id)
+            cache.set(f'product_{id}',result,timeout=15)
+        return result
 
     def check_price(self, id: int) -> float:
         return repository.find(id).price
