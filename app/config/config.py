@@ -22,36 +22,28 @@ class DevelopmentConfig(Config):
     TESTING = True
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
-    SQLALCHEMY_ENGINE_OPTIONS = {
-        "connect_args": {
-            "options": "-csearch_path=catalogo_schema"  # Cambia esto según el microservicio
-        }
-    }
-    CACHE_REDIS_URL = os.getenv('REDIS_URL')
+    CACHE_REDIS_URL = os.getenv("REDIS_URL")
+
 
 class TestConfig(Config):
     TESTING = True
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_TEST_URL")
-    SQLALCHEMY_ENGINE_OPTIONS = {
-        "connect_args": {
-            "options": "-csearch_path=compras_schema"  # Cambia esto según el microservicio
-        }
-    }
-    CACHE_REDIS_URL = os.getenv('REDIS_URL')
+    CACHE_REDIS_URL = os.getenv("REDIS_URL")
+
+
 class ProductionConfig(Config):
     DEBUG = False
     TESTING = False
     SQLALCHEMY_RECORD_QUERIES = False
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_PROD_URL")
-    SQLALCHEMY_ENGINE_OPTIONS = {
-        "connect_args": {
-            "options": "-csearch_path=main_schema"  # Cambia esto según el esquema que uses
-        }
-    }
-    CACHE_REDIS_URL = os.getenv('REDIS_URL')
+    CACHE_REDIS_URL = os.getenv("REDIS_URL")
+
+    @classmethod
+    def init_app(cls, app):
+        Config.init_app(app)
+
 
 def factory(app):
     configuation = {
